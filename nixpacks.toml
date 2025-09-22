@@ -1,0 +1,31 @@
+[phases.setup]
+nixPkgs = ["...", "nodejs_18", "npm-9_x", "openssl"]
+
+[phases.install]
+dependsOn = ["setup"]
+cmds = [
+    "npm install"
+]
+
+[phases.build]
+dependsOn = ["install"]
+cmds = [
+    "npm run build"
+]
+
+[phases.start]
+dependsOn = ["build"]
+cmds = [
+    "npm run start"
+]
+
+[build]
+include = [
+    "package.json",
+    "package-lock.json",
+    ".next/**/*",
+    "public/**/*",
+    "src/**/*",
+    "prisma/**/*",
+    "server.ts"
+]
