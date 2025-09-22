@@ -1,0 +1,274 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  name            String?
+  password        String
+  avatar          String?
+  bio             String?
+  isAdmin         Boolean  @default(false)
+  isVerified      Boolean  @default(false)
+  verificationType String? @default("member") // "admin" or "member"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Password reset fields
+  resetToken      String?
+  resetTokenExpiry DateTime?
+  
+  // Relations
+  posts           Post[]
+  likes           Like[]
+  comments        Comment[]
+  shares          Share[]
+  profile         Profile?
+  badges          UserBadge[]
+  courses         UserCourse[]
+  events          Event[]
+  channelMessages ChannelMessage[]
+  sentMessages    DirectMessage[] @relation("sentMessages")
+  receivedMessages DirectMessage[] @relation("receivedMessages")
+  conversations1  Conversation[] @relation("conversations1")
+  conversations2  Conversation[] @relation("conversations2")
+  
+  @@map("users")
+}
+
+model Profile {
+  id       String @id @default(cuid())
+  userId   String @unique
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  location    String?
+  website     String?
+  socialLinks Json?
+  
+  @@map("profiles")
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  title       String?
+  content     String
+  imageUrl    String?
+  videoUrl    String?
+  authorId    String
+  channelId   String?
+  isPinned    Boolean  @default(false)
+  isHighlighted Boolean @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  channel     Channel?  @relation(fields: [channelId], references: [id])
+  likes       Like[]
+  comments    Comment[]
+  shares      Share[]
+  
+  @@map("posts")
+}
+
+model Like {
+  id      String @id @default(cuid())
+  userId  String
+  postId  String
+  createdAt DateTime @default(now())
+  
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post    Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, postId])
+  @@map("likes")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  @@map("comments")
+}
+
+model Share {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+  
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, postId])
+  @@map("shares")
+}
+
+model Badge {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String
+  icon        String?
+  color       String? @default("#FFD700") // Default gold color
+  category    String @default("achievement") // "achievement", "vip", "special"
+  
+  // Relations
+  users       UserBadge[]
+  
+  @@map("badges")
+}
+
+model UserBadge {
+  id         String   @id @default(cuid())
+  userId     String
+  badgeId    String
+  earnedAt   DateTime @default(now())
+  
+  // Relations
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge      Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, badgeId])
+  @@map("user_badges")
+}
+
+model Channel {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String?
+  icon        String?
+  color       String? @default("#FF0000")
+  isPrivate   Boolean @default(false)
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  posts       Post[]
+  messages    ChannelMessage[]
+  
+  @@map("channels")
+}
+
+model ChannelMessage {
+  id        String   @id @default(cuid())
+  content   String
+  userId    String
+  channelId String
+  createdAt DateTime @default(now())
+  
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  
+  @@map("channel_messages")
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  startTime   DateTime
+  endTime     DateTime
+  location    String?
+  isVirtual   Boolean  @default(false)
+  maxAttendees Int?
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  creator     User     @relation(fields: [createdBy], references: [id])
+  
+  @@map("events")
+}
+
+model Course {
+  id          String @id @default(cuid())
+  title       String
+  description String
+  price       Float
+  imageUrl    String?
+  videoUrl    String?
+  duration    Int?    // in minutes
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  users       UserCourse[]
+  
+  @@map("courses")
+}
+
+model UserCourse {
+  id           String   @id @default(cuid())
+  userId       String
+  courseId     String
+  purchasedAt  DateTime @default(now())
+  completedAt  DateTime?
+  progress     Float    @default(0)
+  
+  // Relations
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course       Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, courseId])
+  @@map("user_courses")
+}
+
+model DirectMessage {
+  id        String   @id @default(cuid())
+  content   String
+  senderId  String
+  receiverId String
+  conversationId String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  sender    User     @relation("sentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver  User     @relation("receivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  conversation Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  @@map("direct_messages")
+}
+
+model Conversation {
+  id          String   @id @default(cuid())
+  user1Id     String
+  user2Id     String
+  lastMessage String?
+  lastMessageAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  user1      User     @relation("conversations1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2      User     @relation("conversations2", fields: [user2Id], references: [id], onDelete: Cascade)
+  messages   DirectMessage[]
+  
+  @@unique([user1Id, user2Id])
+  @@map("conversations")
+}

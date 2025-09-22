@@ -1,0 +1,122 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #000000; /* Preto */
+  --foreground: #FFFFFF; /* Branco */
+  --card: #1a1a1a; /* Cinza escuro para profundidade */
+  --card-foreground: #FFFFFF; /* Branco */
+  --popover: #1a1a1a; /* Cinza escuro para profundidade */
+  --popover-foreground: #FFFFFF; /* Branco */
+  --primary: #FF0000; /* Vermelho */
+  --primary-foreground: #FFFFFF; /* Branco */
+  --secondary: #2a2a2a; /* Cinza médio para contraste */
+  --secondary-foreground: #FFFFFF; /* Branco */
+  --muted: #1a1a1a; /* Cinza escuro */
+  --muted-foreground: #b0b0b0; /* Cinza claro */
+  --accent: #2a2a2a; /* Cinza médio */
+  --accent-foreground: #FFFFFF; /* Branco */
+  --destructive: #FF0000; /* Vermelho */
+  --border: #333333; /* Cinza médio para bordas */
+  --input: #1a1a1a; /* Cinza escuro para inputs */
+  --ring: #FF0000; /* Vermelho para focus */
+  --chart-1: #FF0000; /* Vermelho */
+  --chart-2: #FF3333; /* Vermelho claro */
+  --chart-3: #FF6666; /* Vermelho mais claro */
+  --chart-4: #FF9999; /* Vermelho suave */
+  --chart-5: #FFCCCC; /* Vermelho muito suave */
+  --sidebar: #1a1a1a; /* Cinza escuro */
+  --sidebar-foreground: #FFFFFF; /* Branco */
+  --sidebar-primary: #FF0000; /* Vermelho */
+  --sidebar-primary-foreground: #FFFFFF; /* Branco */
+  --sidebar-accent: #2a2a2a; /* Cinza médio */
+  --sidebar-accent-foreground: #FFFFFF; /* Branco */
+  --sidebar-border: #333333; /* Cinza médio */
+  --sidebar-ring: #FF0000; /* Vermelho */
+}
+
+.dark {
+  --background: #000000; /* Preto */
+  --foreground: #FFFFFF; /* Branco */
+  --card: #0a0a0a; /* Preto muito escuro para profundidade */
+  --card-foreground: #FFFFFF; /* Branco */
+  --popover: #0a0a0a; /* Preto muito escuro */
+  --popover-foreground: #FFFFFF; /* Branco */
+  --primary: #FF0000; /* Vermelho */
+  --primary-foreground: #FFFFFF; /* Branco */
+  --secondary: #1a1a1a; /* Cinza escuro */
+  --secondary-foreground: #FFFFFF; /* Branco */
+  --muted: #0a0a0a; /* Preto muito escuro */
+  --muted-foreground: #999999; /* Cinza médio */
+  --accent: #1a1a1a; /* Cinza escuro */
+  --accent-foreground: #FFFFFF; /* Branco */
+  --destructive: #FF0000; /* Vermelho */
+  --border: #222222; /* Cinza escuro para bordas */
+  --input: #0a0a0a; /* Preto muito escuro para inputs */
+  --ring: #FF0000; /* Vermelho para focus */
+  --chart-1: #FF0000; /* Vermelho */
+  --chart-2: #FF3333; /* Vermelho claro */
+  --chart-3: #FF6666; /* Vermelho mais claro */
+  --chart-4: #FF9999; /* Vermelho suave */
+  --chart-5: #FFCCCC; /* Vermelho muito suave */
+  --sidebar: #0a0a0a; /* Preto muito escuro */
+  --sidebar-foreground: #FFFFFF; /* Branco */
+  --sidebar-primary: #FF0000; /* Vermelho */
+  --sidebar-primary-foreground: #FFFFFF; /* Branco */
+  --sidebar-accent: #1a1a1a; /* Cinza escuro */
+  --sidebar-accent-foreground: #FFFFFF; /* Branco */
+  --sidebar-border: #222222; /* Cinza escuro */
+  --sidebar-ring: #FF0000; /* Vermelho */
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
